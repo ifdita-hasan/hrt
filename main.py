@@ -16,11 +16,12 @@ st.markdown("""
     </style>
     <div class="pixel-text">
         <h1>LEVEL 99 ROMANCE</h1>
-        <p>A wild question appears!</p>
+        <p>will you be my valentine?</p>
     </div>
 """, unsafe_allow_html=True)
 
 # runaway button
+st.image("heart.png", width=300)
 
 proposal_html = """
 <style>
