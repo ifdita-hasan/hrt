@@ -99,6 +99,7 @@ no_button_only_html = """
 if st.query_params.get("accepted") == "true":
     st.balloons()
     st.markdown("<h2 class='pixel-text'>Yay! BEST DECISION EVER! ❤️</h2>", unsafe_allow_html=True)
+    st.image("teddy.png", width=300)
     if st.button("Start Over"):
         st.query_params["accepted"] = "false"
         st.rerun()
