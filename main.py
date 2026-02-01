@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Be my valentine", page_icon="❤️", layout="centered")
 
-# Custom CSS for the text and centering the image
+# Custom CSS for styling
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -15,11 +15,21 @@ st.markdown("""
         line-height: 1.6;
     }
     
-    /* Centering wrapper for the image */
     .img-container {
         display: flex;
         justify-content: center;
         padding: 20px;
+    }
+
+    /* Styling the native Streamlit button to look pixelated */
+    .stButton>button {
+        font-family: 'Press Start 2P', cursive !important;
+        background-color: #00aa00 !important;
+        color: white !important;
+        border: 4px solid #fff !important;
+        box-shadow: 4px 4px 0px #555 !important;
+        height: 60px;
+        font-size: 14px !important;
     }
     </style>
     <div class="pixel-text">
@@ -27,12 +37,13 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Centering the heart image using a div
 st.markdown('<div class="img-container">', unsafe_allow_html=True)
-st.image("heart.png", width=300)
+# Ensure heart.png is in the same directory or use a URL
+st.image("heart.png", width=300) 
 st.markdown('</div>', unsafe_allow_html=True)
 
-proposal_html = """
+# The HTML component now ONLY contains the "NO" button logic
+no_button_only_html = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     
@@ -44,12 +55,9 @@ proposal_html = """
         border: 4px solid #fff;
         image-rendering: pixelated;
         overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
     
-    .pixel-btn {
+    .pixel-btn-no {
         font-family: 'Press Start 2P', cursive;
         padding: 10px 20px;
         border: 4px solid #fff;
@@ -58,20 +66,16 @@ proposal_html = """
         font-size: 14px;
         text-transform: uppercase;
         box-shadow: 4px 4px 0px #555;
-    }
-    
-    #yesBtn { background-color: #00aa00; position: absolute; left: 20%; top: 40%; }
-    #noBtn { background-color: #aa0000; position: absolute; left: 60%; top: 40%; transition: 0.1s ease-out; }
-    
-    .pixel-btn:active {
-        box-shadow: 0px 0px 0px;
-        transform: translate(2px, 2px);
+        background-color: #aa0000;
+        position: absolute;
+        left: 50%;
+        top: 40%;
+        transition: 0.1s ease-out;
     }
 </style>
 
 <div id="game-container">
-    <button id="yesBtn" class="pixel-btn" onclick="celebrate()">YES</button>
-    <button id="noBtn" class="pixel-btn" onmouseover="moveNo()">NO</button>
+    <button id="noBtn" class="pixel-btn-no" onmouseover="moveNo()">NO</button>
 </div>
 
 <script>
@@ -88,19 +92,26 @@ proposal_html = """
         btn.style.left = newX + 'px';
         btn.style.top = newY + 'px';
     }
-
-    function celebrate() {
-        // Updated to use window.top to ensure the parent URL changes
-        const url = window.parent.location.href.split('?')[0];
-        window.top.location.href = url + "?accepted=true";
-    }
 </script>
 """
 
-# Handling the response
+# Logic Handling
 if st.query_params.get("accepted") == "true":
     st.balloons()
     st.markdown("<h2 class='pixel-text'>Yay! BEST DECISION EVER! ❤️</h2>", unsafe_allow_html=True)
-
+    if st.button("Start Over"):
+        st.query_params["accepted"] = "false"
+        st.rerun()
 else:
-    components.html(proposal_html, height=350)
+    # Creating columns for the buttons
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        # Native Streamlit button (The "Yes" that actually works)
+        if st.button("YES", use_container_width=True):
+            st.query_params["accepted"] = "true"
+            st.rerun()
+            
+    with col2:
+        # The elusive "No" button
+        components.html(no_button_only_html, height=350)
