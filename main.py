@@ -15,7 +15,6 @@ st.markdown("""
     }
     </style>
     <div class="pixel-text">
-        <h1>LEVEL 99 ROMANCE</h1>
         <p>will you be my valentine?</p>
     </div>
 """, unsafe_allow_html=True)
